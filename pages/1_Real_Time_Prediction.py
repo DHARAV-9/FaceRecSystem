@@ -1,112 +1,65 @@
-<<<<<<< HEAD
-import streamlit as st 
-# from Home import face_rec
-=======
-import streamlit as st
+iimport streamlit as st
 from Home import face_rec
->>>>>>> master
 from streamlit_webrtc import webrtc_streamer
 import av
 import time
-
-<<<<<<< HEAD
 from auth import authenticator
 
-if st.session_state['authentication_status']:
+# Check authentication status
+if st.session_state.get('authentication_status'):
     authenticator.logout('Logout', 'sidebar', key='unique_key')
 
-    with st.spinner("Loading Models and Conneting to Redis db ..."):
+    with st.spinner("Loading Models and Connecting to Redis db ..."):
         import face_rec
 
-    # st.set_page_config(page_title='Predictions')
+    # Page header
     st.subheader('Real-Time Attendance System')
 
-
-    # Retrive the data from Redis Database
-    with st.spinner('Retriving Data from Redis DB ...'):
+    # Retrieve the data from Redis Database
+    with st.spinner('Retrieving Data from Redis DB ...'):
         redis_face_db = face_rec.retrive_data(name='academy:register')
         st.dataframe(redis_face_db)
 
-    st.success("Data sucessfully retrived from Redis")
+    st.success("Data successfully retrieved from Redis")
 
-    # time
-    waitTime = 30 # time in sec
+    # Time setup for saving logs
+    waitTime = 30  # seconds
     setTime = time.time()
-    realtimepred = face_rec.RealTimePred() # real time prediction class
+    realtimepred = face_rec.RealTimePred()  # Real-time prediction class
 
-    # Real Time Prediction
-    # streamlit webrtc
-    # callback function
+    # Real-time video callback function
     def video_frame_callback(frame):
-        global setTime
+        nonlocal setTime  # use nonlocal since setTime is in enclosing scope
 
-        img = frame.to_ndarray(format="bgr24") # 3 dimension numpy array
-        # operation that you can perform on the array
-        pred_img = realtimepred.face_prediction(img,redis_face_db,
-                                            'facial_features',['Name','Role'],thresh=0.5)
+        img = frame.to_ndarray(format="bgr24")  # Convert to 3D numpy array
 
+        # Perform face prediction
+        pred_img = realtimepred.face_prediction(
+            img,
+            redis_face_db,
+            'facial_features',
+            ['Name', 'Role'],
+            thresh=0.5
+        )
+
+        # Save logs every `waitTime` seconds
         timenow = time.time()
         difftime = timenow - setTime
         if difftime >= waitTime:
             realtimepred.saveLogs_redis()
-            setTime = time.time() # reset time
-            print('Save Data to redis database')
-
+            setTime = time.time()  # reset timer
+            print('Saved data to Redis database')
 
         return av.VideoFrame.from_ndarray(pred_img, format="bgr24")
 
-
-    webrtc_streamer(key="realtimePrediction", video_frame_callback=video_frame_callback,
-    rtc_configuration={
+    # Streamlit WebRTC streamer
+    webrtc_streamer(
+        key="realtimePrediction",
+        video_frame_callback=video_frame_callback,
+        rtc_configuration={
             "iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]
         }
     )
 
 else:
     authenticator.login('Login', 'main')
-=======
-# from auth import authenticator
-
-# st.set_page_config(page_title='Predictions')
-st.subheader('Real-Time Attendance System')
-
-# Retrive the data from Redis Database
-with st.spinner('Retriving Data from Redis DB ...'):
-    redis_face_db = face_rec.retrive_data(name='academy:register')
-    st.dataframe(redis_face_db)
-
-st.success("Data sucessfully retrived from Redis")
-
-# time
-waitTime = 30 # time in sec
-setTime = time.time()
-realtimepred = face_rec.RealTimePred() # real time prediction class
-
-# Real Time Prediction
-# streamlit webrtc
-# callback function
-def video_frame_callback(frame):
-    global setTime
-
-    img = frame.to_ndarray(format="bgr24") # 3 dimension numpy array
-    # operation that you can perform on the array
-    pred_img = realtimepred.face_prediction(img,redis_face_db,
-                                        'facial_features',['Name','Role'],thresh=0.5)
-
-    timenow = time.time()
-    difftime = timenow - setTime
-    if difftime >= waitTime:
-        realtimepred.saveLogs_redis()
-        setTime = time.time() # reset time
-        print('Save Data to redis database')
-
-
-    return av.VideoFrame.from_ndarray(pred_img, format="bgr24")
-
-
-webrtc_streamer(key="realtimePrediction", video_frame_callback=video_frame_callback,
-rtc_configuration={
-        "iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]
-    }
-)
->>>>>>> master
