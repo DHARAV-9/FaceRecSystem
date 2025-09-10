@@ -8,8 +8,7 @@ st.header('Attendance System using Face Recognition')
 image_path = 'gsfc.jpg'
 
 # Display the image
-st.image(image_path, caption='GSFCU Face Attendance System',
-         use_container_width=True
+st.image(image_path, caption='GSFCU Face Attendance System', width='stretch')
 
 with st.spinner("Loading Face Attendance System ..."):
     import face_rec
