@@ -1,7 +1,11 @@
 import numpy as np
 import pandas as pd
 import cv2
+<<<<<<< HEAD
 from auth import authenticator
+=======
+# from auth import authenticator
+>>>>>>> master
 import redis
 
 # insight face
@@ -13,6 +17,7 @@ from datetime import datetime
 
 import os
 
+<<<<<<< HEAD
 # Connect to Redis Client
 hostname = 'redis-19848.c263.us-east-1-2.ec2.redns.redis-cloud.com'
 portnumber = 19848
@@ -21,6 +26,12 @@ password = '7f6DoiogYS4PDWjklxEkN0JNj8ehAhhL'
 r = redis.StrictRedis(host=hostname,
                       port=portnumber,
                       password=password)
+=======
+r = redis.StrictRedis(host='redis-14253.c85.us-east-1-2.ec2.redns.redis-cloud.com',
+                    port=14253,
+                      password='PPY7qSzvYpRuPXGHZFVlV8hKfwPuBkCn')
+
+>>>>>>> master
 
 # Retrive Data from database
 def retrive_data(name):

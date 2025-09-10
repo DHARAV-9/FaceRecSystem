@@ -6,7 +6,11 @@ scikit-learn
 streamlit
 streamlit-webrtc
 insightface
+<<<<<<< HEAD
 onnxruntime
 streamlit-authenticator
 pyyaml
 av
+=======
+onnxruntime
+>>>>>>> master
