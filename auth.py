@@ -16,11 +16,13 @@ authenticator = stauth.Authenticate(
 
 authenticator.login('Login', 'main')
 
-if st.session_state["authentication_status"]:
+auth_status = st.session_state.get("authentication_status")
+
+if auth_status:
     authenticator.logout('Logout', 'sidebar', key='unique_key')
-    st.write(f'Welcome *{st.session_state["name"]}*')
+    st.write(f'Welcome *{st.session_state.get("name", "User")}*')
     st.title('Some content')
-elif st.session_state["authentication_status"] is False:
+elif auth_status is False:
     st.error('Username/password is incorrect')
-elif st.session_state["authentication_status"] is None:
+elif auth_status is None:
     st.warning('Please enter your username and password')
